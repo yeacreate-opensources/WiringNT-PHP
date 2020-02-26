@@ -1,4 +1,0 @@
-
-[submodule "WiringPi"]
-	path = WiringPi
-	url = https://github.com/yeacreate-opensources/wiringNT
