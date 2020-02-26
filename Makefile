@@ -1,43 +1,64 @@
-SHELL:=/bin/bash -O extglob
+###################################################
+##       .(@@@@@@@@@@@@@@@@@@@@@@@@@@@@(.        ##
+##     *@.                              .@(      ##
+##     @#                      *%(       *@      ##
+##     @#                     &.  &.     *@      ##
+##     @#       ,@&@.           @*       *@      ##
+##     @#       *@  @%          @*       *@      ##
+##     @#       *@   *@.        @*       *@      ##
+##     @#       *@     @(       @*       *@      ##
+##     @#       *@      #@      @*      #( &.    ##
+##     @#       *@        @/    @*       ,(      ##
+##     #&       *@         %&   @*               ##
+##       #@@@@@@@*    #@.   ,@, @*               ##
+##             #&       *@#   %@&     .@%        ##
+##       *@    #&         .@%           *@*      ##
+##      %&     #&           ,@#           &@     ##
+##     @/      #&                   #@     (@.   ##
+##   @&        #&                   &%      ,@(  ##
+##  ,          (@,                 #@.           ##
+##                @@@@@@@@@@@@@@@@@              ##
+###################################################
+# WiriingNT PHP extension
+#
+# Made by YeaCreate WWX<wwx@yeacreate.com> & Simon<simon@yeacreate.com>
+###################################################
 
-BUILD_DIR = build
-INCDIR = WiringPi/wiringPi/
+
+ifneq ($V,1)
+Q ?= @
+endif
+
+CC	= gcc
+DEBUG	= -O3
+
 LIB = wiringpi
+WRAP = wiringpi_wrap
 
-CFLAGS = -c -fpic `php-config --includes` -I${INCDIR} -DYC_NTABLET
+INCLUDE	= -I/usr/local/include
+CFLAGS = $(DEBUG) -c -fpic `php-config --includes` -I${INCLUDE} -Winline -pipe
 
-SOURCES = wiringpi_wrap.c $(wildcard WiringPi/devLib/*.c) $(wildcard WiringPi/wiringPi/*c)
+LDFLAGS	= -L/usr/local/lib
+LDLIBS    = -lwiringPi -lwiringPiDev -lpthread -lm
 
-SOURCES := $(filter-out WiringPi/devLib/piFaceOld.c,$(SOURCES))
+SRC	= $(WRAP).c
 
-#$(info ${SOURCES})
+OBJ	=	$(SRC:.c=.o)
 
-OBJECTS=$(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.c=.o)))
+all: $(LIB)
 
-#$(info ${OBJECTS})
+$(LIB): $(OBJ)
+	$(CC) -shared $(WRAP).o -o $(LIB).so $(LDFLAGS) $(LDLIBS)
 
-all: $(BUILD_DIR) $(SOURCES) $(LIB)
-
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-
-$(LIB): $(OBJECTS)
-	gcc -shared $(BUILD_DIR)/*.o -o $(BUILD_DIR)/$(LIB).so
-
-$(BUILD_DIR)/%.o: %.c
-	gcc $(CFLAGS) -o $@ $<
-
-$(BUILD_DIR)/%.o: WiringPi/wiringPi/%.c
-	gcc $(CFLAGS) -o $@ $<
-
-$(BUILD_DIR)/%.o: WiringPi/devLib/%.c
-	gcc $(CFLAGS) -o $@ $<
+.c.o:
+	$(CC) $(CFLAGS) $(SRC)
 
 install:
-	cp $(BUILD_DIR)/$(LIB).so `php-config --extension-dir`
-	cp wiringpi.php `php-config --extension-dir`
+	cp $(LIB).so `php-config --extension-dir`
+	cp $(LIB).php `php-config --extension-dir`
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -f $(LIB).so
+	rm -f $(WRAP).o
 
 .PHONY: clean

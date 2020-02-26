@@ -11,7 +11,7 @@ You will need to clone this repository with the --recursive flag on git clone as
 Building
 ========
 
-You will need to first install php-dev or php5-dev
+You will need to first install php-dev or php7-dev
 
 Then
 
@@ -21,7 +21,7 @@ make
 
 This will give you a build folder with the wiringpi.so module, this needs to go in the relevant folder of your PHP installation.
 
-Most likely somewhere in /usr/lib/php5/
+Most likely somewhere in /usr/lib/php7/
 
 Alternatively you can:
 
@@ -35,7 +35,7 @@ This will additionally copy `wiringpi.php` which you can include with:
 include(ini_get('extension_dir') . '/wiringpi.php');
 ```
 
-To choose the pin mapping type that you wish to use, create an ini file /etc/php5/conf.d/wiringpi.ini and adding the following:
+To choose the pin mapping type that you wish to use, create an ini file /etc/php7/conf.d/wiringpi.ini and adding the following:
 
 ```
 extension=wiringpi.so
