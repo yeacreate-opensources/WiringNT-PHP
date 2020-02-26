@@ -36,7 +36,7 @@ LIB = wiringpi
 WRAP = wiringpi_wrap
 
 INCLUDE	= -I/usr/local/include
-CFLAGS = $(DEBUG) -c -fpic `php-config --includes` -I${INCLUDE} -Winline -pipe
+CFLAGS = $(DEBUG) -c -fpic `php-config --includes` ${INCLUDE} -Winline -pipe
 
 LDFLAGS	= -L/usr/local/lib
 LDLIBS    = -lwiringPi -lwiringPiDev -lpthread -lm
